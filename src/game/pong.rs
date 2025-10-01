@@ -1,5 +1,5 @@
 use std::process::exit;
-use bevy::prelude::{App, Update, Plugin, Startup, ColorMaterial, Commands, Camera2d, Component, Transform, Mesh2d, ResMut, Assets, Mesh, Rectangle, MeshMaterial2d, Color, Query, Window, With, Res, Time, ButtonInput, KeyCode, Circle, IntoScheduleConfigs, info};
+use bevy::prelude::{App, Update, Plugin, Startup, ColorMaterial, Commands, Camera2d, Component, Transform, Mesh2d, ResMut, Assets, Mesh, Rectangle, MeshMaterial2d, Color, Query, Window, With, Res, Time, ButtonInput, KeyCode, Circle, IntoScheduleConfigs, info, Text2d, TextFont, TextColor};
 use bevy::window::PrimaryWindow;
 use crate::game::game_state::GameState;
 use crate::game::paddle::Paddle;
@@ -13,6 +13,9 @@ pub enum Player {
 
 #[derive(Component)]
 pub struct Ball;
+
+#[derive(Component)]
+struct Scoreboard;
 
 pub struct Pong;
 
@@ -28,10 +31,32 @@ impl Plugin for Pong {
 }
 
 fn setup_board(
-    mut commands: Commands
+    mut commands: Commands,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    game_state: Res<GameState>,
 ) {
     // Spawn camera
     commands.spawn(Camera2d);
+
+    // Place scoreboard text near the top-center of the window
+    let window = match window_query.single() {
+        Ok(w) => w,
+        Err(e) => {
+            eprintln!("Could not get a single window. Err: {}", e);
+            exit(1);
+        }
+    };
+
+    let y = (window.height() / 2.0) - 40.0;
+    let text = format!("{} | {}", game_state.p1_score(), game_state.p2_score());
+
+    commands.spawn((
+        Text2d::new(text),
+        TextFont::from_font_size(48.0),
+        TextColor(Color::srgba(1.0, 1.0, 1.0, 1.0)),
+        Transform::from_xyz(0.0, y, 0.0),
+        Scoreboard,
+    ));
 }
 
 fn setup_ball(
@@ -93,6 +118,7 @@ fn player_scored(
     mut game_state: ResMut<GameState>,
     ball_position_query: Query<&mut Transform, With<Ball>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
+    mut scoreboard_query: Query<&mut Text2d, With<Scoreboard>>,
 ) {
     if !game_state.ball_moving() { return; }
 
@@ -113,6 +139,9 @@ fn player_scored(
             let out_of_bounds = ball_x_offset_pos <= -width;
             if out_of_bounds {
                 game_state.inc_p2_score();
+                if let Ok(mut text2d) = scoreboard_query.single_mut() {
+                    text2d.0 = format!("{} | {}", game_state.p1_score(), game_state.p2_score());
+                }
                 info!("P1 Score: {}, P2 Score: {}", game_state.p1_score(), game_state.p2_score());
                 reset_game(game_state, ball_position_query);
             }
@@ -122,6 +151,9 @@ fn player_scored(
             let out_of_bounds = ball_x_offset_pos >= width;
             if out_of_bounds {
                 game_state.inc_p1_score();
+                if let Ok(mut text2d) = scoreboard_query.single_mut() {
+                    text2d.0 = format!("{} | {}", game_state.p1_score(), game_state.p2_score());
+                }
                 info!("P1 Score: {}, P2 Score: {}", game_state.p1_score(), game_state.p2_score());
                 reset_game(game_state, ball_position_query);
             }
