@@ -1,4 +1,4 @@
-use bevy::prelude::{info, ButtonInput, KeyCode, Query, Res, ResMut, Time, Transform, Window, With};
+use bevy::prelude::{ButtonInput, KeyCode, Query, Res, ResMut, Time, Transform, Window, With};
 use bevy::window::PrimaryWindow;
 use rand::Rng;
 use crate::game::game_state::GameState;
