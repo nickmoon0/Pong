@@ -166,6 +166,9 @@ fn reset_game(
     mut ball_query: Query<&mut Transform, With<Ball>>
 ) {
     game_state.toggle_ball_moving();
+    game_state.set_ball_angle(0.0);
+    game_state.reset_ball_speed_coefficient();
+
     let mut ball_transform = match ball_query.single_mut() {
         Ok(transform) => transform,
         Err(e) => panic!("Failed to get ball when resetting game. Err: {}", e)

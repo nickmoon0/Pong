@@ -77,4 +77,8 @@ impl GameState {
     pub fn bump_speed_coefficient(&mut self) {
         self.ball_speed_coefficient += 0.2;
     }
+
+    pub fn reset_ball_speed_coefficient(&mut self) {
+        self.ball_speed_coefficient = 1.0;
+    }
 }

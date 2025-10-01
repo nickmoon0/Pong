@@ -1,4 +1,5 @@
-use bevy::prelude::{ButtonInput, KeyCode, Query, Res, ResMut, Time, Transform, Window, With};
+use bevy::prelude::{info, ButtonInput, KeyCode, Query, Res, ResMut, Time, Transform, Window, With};
+use bevy::prelude::ops::abs;
 use bevy::window::PrimaryWindow;
 use rand::Rng;
 use crate::game::game_state::GameState;
@@ -107,13 +108,15 @@ pub fn collision_detected(
         };
 
         let y_center = (paddle_top + paddle_bottom) / 2.0;
+        let angle_coefficient = (abs(ball_y - y_center) / 50.0).clamp(0.0, 1.0);
 
         if y_collision && x_collision {
             game_state.toggle_ball_direction();
+            info!("Distance from center: {}", angle_coefficient);
             if ball_y > y_center {
-                game_state.set_ball_angle(45.0);
+                game_state.set_ball_angle(60.0 * angle_coefficient);
             } else {
-                game_state.set_ball_angle(-45.0);
+                game_state.set_ball_angle(-60.0 * angle_coefficient);
             }
             game_state.bump_speed_coefficient();
         }
