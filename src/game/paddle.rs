@@ -1,5 +1,4 @@
-use bevy::prelude::{Bundle, Mesh2d, MeshMaterial2d, Transform};
-use bevy::sprite::ColorMaterial;
+use bevy::prelude::{Bundle, ColorMaterial, Mesh2d, MeshMaterial2d, Transform};
 use crate::game::pong::Player;
 
 #[derive(Bundle)]
