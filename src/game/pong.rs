@@ -155,7 +155,7 @@ fn handle_controls(
     let p2_up = KeyCode::ArrowUp;
     let p2_down = KeyCode::ArrowDown;
 
-    let movement_speed = 150.;
+    let movement_speed = 300.;
 
     // Set window height variables
     let window = match window_query.single() {

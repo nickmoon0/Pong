@@ -35,8 +35,8 @@ pub fn move_ball(
     };
 
     let movement_speed: f32 = 150.;
-    let x_movement = movement_speed * time.delta_secs();
-    let y_movement = game_state.ball_angle() * time.delta_secs();
+    let x_movement = movement_speed * time.delta_secs() * game_state.ball_speed_coefficient();
+    let y_movement = game_state.ball_angle() * time.delta_secs() * game_state.ball_speed_coefficient();
 
     match game_state.ball_direction() {
         BallDirection::Left => {
@@ -115,6 +115,7 @@ pub fn collision_detected(
             } else {
                 game_state.set_ball_angle(-45.0);
             }
+            game_state.bump_speed_coefficient();
         }
     }
 }
