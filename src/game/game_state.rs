@@ -6,7 +6,8 @@ pub struct GameState {
     p1_score: u16,
     p2_score: u16,
     ball_moving: bool,
-    ball_direction: BallDirection
+    ball_direction: BallDirection,
+    ball_angle: f32
 }
 
 impl GameState {
@@ -15,7 +16,8 @@ impl GameState {
             p1_score: 0,
             p2_score: 0,
             ball_moving: false,
-            ball_direction: BallDirection::Left // default value, it will be overwritten on actual start
+            ball_direction: BallDirection::Left, // default value, it will be overwritten on actual start
+            ball_angle: 0.0
         }
     }
 
@@ -33,6 +35,10 @@ impl GameState {
 
     pub fn ball_direction(&self) -> &BallDirection {
         &self.ball_direction
+    }
+
+    pub fn ball_angle(&self) -> f32 {
+        self.ball_angle
     }
 
     pub fn inc_p1_score(&mut self) {
@@ -56,5 +62,9 @@ impl GameState {
 
     pub fn set_ball_direction(&mut self, direction: BallDirection) {
         self.ball_direction = direction;
+    }
+
+    pub fn set_ball_angle(&mut self, angle: f32) {
+        self.ball_angle = angle;
     }
 }
